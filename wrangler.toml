@@ -1,0 +1,10 @@
+name = "tflite-entity-resolver"
+main = "src/index.ts"
+compatibility_date = "2025-02-24"
+account_id = "40d37d9f795ab122228075b0becc0e08"
+
+[observability]
+enabled = true
+
+[placement]
+mode = "smart"

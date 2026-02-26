@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client-side Knowledge Graph Generator</title>
+  
+  <!-- Tailwind CSS for rapid UI -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- vis-network for graph visualization -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+  
+  <!-- t-SNE and Plotly for 3D visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/tsne@1.0.1/tsne.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  
+  <style>
+    /* Styling for the graph container */
+    #graph-container {
+      width: 100%;
+      height: 600px;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      background-color: #f9fafb;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-800 font-sans">
+  
+  <div class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Knowledge Graph Generator</h1>
+      <p class="text-gray-600">100% client-side. ML models run in your browser's RAM — no data leaves your device.</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Input Section -->
+      <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col h-[600px]">
+        <label for="input-text" class="flex justify-between items-end text-sm font-medium text-gray-700 mb-2">
+          <span>Paste Titles / Meta Descriptions</span>
+          <button id="clear-btn" class="hidden text-xs text-blue-600 hover:text-blue-800">Clear & Edit</button>
+        </label>
+        
+        <div id="input-container" class="flex-1 relative mb-4">
+          <textarea 
+            id="input-text" 
+            class="absolute inset-0 w-full h-full border border-gray-300 rounded-md shadow-sm p-3 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm resize-none" 
+            placeholder="title: Apple iPhone 15 Pro Review & Specs | TechRadar&#10;desc: Discover the new features of the Apple iPhone 15 Pro. Read our in-depth review of the camera, USB-C, and performance.&#10;&#10;title: Tesla Model 3 Long Range Price & Range 2024&#10;desc: The definitive guide to the 2024 Tesla Model 3 Long Range. Explore range, top speed, and Autopilot safety features."></textarea>
+          
+          <div id="table-container" class="hidden absolute inset-0 w-full h-full border border-gray-300 rounded-md shadow-sm overflow-auto bg-white">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+              <thead class="bg-gray-50 sticky top-0">
+                <tr>
+                  <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider w-1/3">Title</th>
+                  <th scope="col" class="px-3 py-2 text-left font-medium text-gray-500 uppercase tracking-wider w-2/3">Description</th>
+                </tr>
+              </thead>
+              <tbody id="table-body" class="bg-white divide-y divide-gray-200">
+                <!-- Rows injected here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="flex flex-col space-y-3 mt-4">
+          <label class="flex flex-col space-y-1 text-sm text-gray-700">
+            <span class="font-medium">Visualization Style:</span>
+            <select id="view-mode" class="border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="2d">2D Network Graph (Entities & Relationships)</option>
+              <option value="3d">3D t-SNE Map (Semantic Clusters)</option>
+              <option value="treemap">SEO Topic Clusters (Interactive Treemap)</option>
+            </select>
+          </label>
+          
+          <label class="flex items-center space-x-2 text-sm text-gray-700">
+            <span class="w-48">Similarity Threshold:</span>
+            <input type="range" id="similarity-threshold" min="0" max="1" step="0.05" value="0.5" class="w-full">
+            <span id="threshold-display" class="font-mono text-xs w-8 text-right">0.5</span>
+          </label>
+          
+          <label class="flex items-center space-x-2 text-sm text-gray-700">
+            <input type="checkbox" id="show-pages" class="rounded text-blue-600 focus:ring-blue-500">
+            <span>Show Page Nodes (Default: Entities Only)</span>
+          </label>
+          
+          <button 
+            id="generate-btn" 
+            class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            Generate Graph
+          </button>
+          
+          <button 
+            id="load-sample-btn" 
+            class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 focus:outline-none transition-colors">
+            Load Sample Data (60 pages)
+          </button>
+        </div>
+
+        <!-- Status / Logs -->
+        <div class="mt-4 flex-1 overflow-y-auto bg-gray-50 border border-gray-200 rounded p-3 font-mono text-xs text-gray-600 space-y-1" id="status-log">
+          <div class="text-gray-400 italic">Waiting to start...</div>
+        </div>
+      </div>
+
+      <!-- Graph Section -->
+      <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col h-[600px]">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-sm font-medium text-gray-700">Graph Visualization</h2>
+          <div class="flex items-center space-x-4 text-xs text-gray-500">
+            <button id="export-btn" class="hidden px-2 py-1 bg-green-50 text-green-700 hover:bg-green-100 rounded border border-green-200 transition-colors font-medium">Export JSON</button>
+            <div class="flex items-center"><span class="w-3 h-3 rounded-full bg-blue-500 mr-1"></span> Page</div>
+            <div class="flex items-center"><span class="w-3 h-3 rounded-full bg-amber-500 mr-1"></span> Entity</div>
+          </div>
+        </div>
+        <div id="graph-container" class="flex-1 relative">
+          <!-- Graph renders here -->
+          <div id="graph-placeholder" class="absolute inset-0 flex items-center justify-center text-gray-400">
+            Graph will appear here
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Main Application Logic -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
